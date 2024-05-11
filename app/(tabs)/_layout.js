@@ -4,7 +4,7 @@ import React from 'react'
 const TabsLayout = () => {
   return (
   <Tabs>
-    <Tabs.Screen name ="index"/>
+    <Tabs.Screen name ="Hometab"/>
     <Tabs.Screen name ="ProfileTab"/>
   </Tabs>  
 )

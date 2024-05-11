@@ -7,11 +7,12 @@ import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 // import { useDispatch } from 'react-redux';
 // import { authenticate } from "../../redux/slices/app.slice";
-// import { emailValidator } from '../../helpers/emailValidator';
-// import { passwordValidator } from '../../helpers/passwordValidator';
+ import { emailValidator } from '../../helpers/emailValidator';
+ import { passwordValidator } from '../../helpers/passwordValidator';
 // import api from '../../Services/axiosInst';
 import styles from './styles'
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import api from '../../api';
 // import jwtDecode from 'jwt-decode';
 
 const Login = () => {
@@ -21,29 +22,26 @@ const Login = () => {
   // const dispatch = useDispatch();
 
   const onLoginPressed = async () => {
-    // const emailError = emailValidator(email.value);
-    // const passwordError = passwordValidator(password.value);
-    // if (emailError || passwordError) {
-    //   setEmail({ ...email, error: emailError });
-    //   setPassword({ ...password, error: passwordError });
-    //   return;
-    // } else {
-    //   const verifiedemail = email.value;
-    //   const verifiedpassword = password.value;
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
+    } else {
+      const verifiedemail = email.value;
+      const verifiedpassword = password.value;
 
-    //   try{ 
-    //     const response = await api.post('api/token/', { username: verifiedemail, password: verifiedpassword })
-    //     if(response.status===200) {
-    //        dispatch(authenticate({ loggedIn: true,username:jwtDecode(response.data.access).username,token:response.data.access}));
-    //      }
-
-    //   } catch(error){
-    //     setPassword({...password,error:"Unvalid username or password"})
-    //     console.log(error)
-    //   }
+      try{ 
+        const response = await api.post('api/login', { email: verifiedemail, password: verifiedpassword })
+        router.push('/Hometab')
+      } catch(error){
+        setPassword({...password,error:"Unvalid email or password"})
+        console.log(error)
+      }
      
       
-    // }
+    }
   };
 
   return (

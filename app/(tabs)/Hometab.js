@@ -1,10 +1,12 @@
 import React from 'react'
 import Home from '../../screens/HomePage'
+import Login from '../../screens/Login'
 
-const index = () => {
+const Hometab = () => {
   return (
    <Home></Home>
+
   )
 }
 
-export default index
+export default Hometab
