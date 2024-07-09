@@ -5,6 +5,7 @@ import Background from '../../components/Background';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
+
 // import { useDispatch } from 'react-redux';
 // import { authenticate } from "../../redux/slices/app.slice";
  import { emailValidator } from '../../helpers/emailValidator';
@@ -34,7 +35,9 @@ const Login = () => {
 
       try{ 
         const response = await api.post('api/login', { email: verifiedemail, password: verifiedpassword })
-        router.push('/Hometab')
+        const user_id=response.data.user_id;
+        router.replace('/Hometab')
+       
       } catch(error){
         setPassword({...password,error:"Unvalid email or password"})
         console.log(error)

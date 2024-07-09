@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { CameraView } from 'expo-camera/next';
+import { CameraView } from 'expo-camera';
 import { Text, View, Button } from 'react-native';
+import Toast from 'react-native-toast-message';
 import api from '../api';
 
-function QrScanner({ setScan }) {
+function QrScanner({ setScan, location }) {
   const [hasPermission, setHasPermission] = useState(true);
   const [scannedData, setScannedData] = useState(null);
-  const [isScanning, setIsScanning] = useState(true); // Add this line
+  const [isScanning, setIsScanning] = useState(true);
 
   const handleExit = () => {
     setScan(false);
@@ -16,28 +17,42 @@ function QrScanner({ setScan }) {
     // askForCameraPermission();
   }, []);
 
-  // const askForCameraPermission = async () => {
-  //   const { status, requestPermissionsAsync } = useCameraPermissions();
-  //   if (status === 'granted') {
-  //     setHasPermission(true);
-  //     return;
-  //   }
+  const handleBarCodeScanned = async ({ type, data }) => {
+    if (!isScanning) return;
 
-  //   const { status: granted } = await requestPermissionsAsync();
-  //   setHasPermission(granted === 'granted');
-  // };
-
-  const handleBarCodeScanned = async({ type, data }) => {
-    if (!isScanning) return; 
-
-    setIsScanning(false); 
-    console.log('called');
+    setIsScanning(false);
     setScannedData(data);
     try {
-      const res=await api.post('/api/getScannedInfo',{data:data,"user_id":"1"});
-      console.log(res.data);
+      const res = await api.post('/api/getScannedInfo', {
+        data: data,
+        user_id: "1",
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+
+      if (res.data.response === 'success') {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: res.data.message,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: res.data.message,
+        });
+      }
     } catch (err) {
-      console.log(err)
+      let errorMessage = 'Something went wrong. Please try again.';
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message;
+      }
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: errorMessage,
+      });
     }
     setScan(false);
   };
@@ -51,8 +66,12 @@ function QrScanner({ setScan }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{alignItems:'center'}}></View>
-      <CameraView ratio={'16:9'} style={{ width: '100%', height: 600 }} onBarcodeScanned={isScanning ? handleBarCodeScanned : undefined}>
+      <View style={{ alignItems: 'center' }}></View>
+      <CameraView
+        ratio={'16:9'}
+        style={{ width: '100%', height: 600 }}
+        onBarcodeScanned={isScanning ? handleBarCodeScanned : undefined}
+      >
         {scannedData ? (
           <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 24, marginBottom: 10 }}>Scanned Data:</Text>
@@ -61,7 +80,7 @@ function QrScanner({ setScan }) {
           </View>
         ) : null}
       </CameraView>
-      <Button title="X" onPress={handleExit}  />
+      <Button title="X" onPress={handleExit} />
     </View>
   );
 }

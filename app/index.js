@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Login from "../screens/Login";
 import { Redirect } from "expo-router";
+const Index = () => {
+   const [userId, setUserId] = useState(null);
+  
+  
+  // useEffect(() => {
+  //   const fetchUserId = async () => {
+  //     const user_id = await AsyncStorage.getItem('user_id');
+  //     setUserId(user_id);
+  //   }
 
-const index = () => {
+  //   fetchUserId();
+  // }, []);
 
   return(
-    // <Redirect href='Hometab'></Redirect>
-    <Login></Login>
+   
+    userId ? <Redirect href='Hometab'></Redirect> : <Login></Login>
+    
   )
-  
-
 };
 
-export default index;
+export default Index;

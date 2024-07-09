@@ -16,6 +16,12 @@
           "recordAudioAndroid": true
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
       "expo-router"
     ],
     "userInterfaceStyle": "light",

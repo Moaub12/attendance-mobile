@@ -6,8 +6,8 @@ const RootLayout = () => {
     //  <Stack.Screen name='index'></Stack.Screen>
       // <Stack.Screen name ="(tabs)"/>
     <Stack>
-      <Stack.Screen name='index'></Stack.Screen>
-      <Stack.Screen name ="(tabs)"/>
+      <Stack.Screen name='index' ></Stack.Screen>
+      <Stack.Screen name ="(tabs)" />
     </Stack>
   )
 }
