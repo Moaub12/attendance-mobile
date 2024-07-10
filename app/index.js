@@ -1,24 +1,35 @@
+// Index.js
 import React, { useEffect, useState } from "react";
-import Login from "../screens/Login";
 import { Redirect } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Login from "../screens/Login";
+
 const Index = () => {
-   const [userId, setUserId] = useState(null);
-  
-  
-  // useEffect(() => {
-  //   const fetchUserId = async () => {
-  //     const user_id = await AsyncStorage.getItem('user_id');
-  //     setUserId(user_id);
-  //   }
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  //   fetchUserId();
-  // }, []);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id) {
+          setUserId(user_id);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return(
-   
-    userId ? <Redirect href='Hometab'></Redirect> : <Login></Login>
-    
-  )
+    fetchUserId();
+  }, []);
+
+  if (loading) {
+    return null; // Or a loading spinner
+  }
+
+  return userId ? <Redirect href='Hometab' /> : <Login setUserId={setUserId} />;
 };
 
 export default Index;

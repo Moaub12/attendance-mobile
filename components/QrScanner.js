@@ -3,18 +3,30 @@ import { CameraView } from 'expo-camera';
 import { Text, View, Button } from 'react-native';
 import Toast from 'react-native-toast-message';
 import api from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function QrScanner({ setScan, location }) {
   const [hasPermission, setHasPermission] = useState(true);
   const [scannedData, setScannedData] = useState(null);
   const [isScanning, setIsScanning] = useState(true);
+  const [userId, setUserId] = useState(null);
 
   const handleExit = () => {
     setScan(false);
   };
-
   useEffect(() => {
-    // askForCameraPermission();
+    const fetchUserId = async () => {
+      try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id) {
+          setUserId(user_id);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchUserId();
   }, []);
 
   const handleBarCodeScanned = async ({ type, data }) => {
@@ -25,7 +37,7 @@ function QrScanner({ setScan, location }) {
     try {
       const res = await api.post('/api/getScannedInfo', {
         data: data,
-        user_id: "1",
+        user_id: userId,
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
